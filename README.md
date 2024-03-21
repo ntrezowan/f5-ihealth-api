@@ -1,4 +1,4 @@
-### What is this?
+## What is this?
 
 This is a Postman collection for F5 iHealth API which can do the following; 
 
@@ -12,6 +12,6 @@ This is a Postman collection for F5 iHealth API which can do the following;
 
 ---
 
-# How to load it to my Postman?
+## How to load it to my Postman?
 1. Download ihealth.collection from the repo
 2. Import to Postman
