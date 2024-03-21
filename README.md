@@ -1,6 +1,6 @@
 # What is this?
 
-This is a Postman collection for F5 iHealth API that can do the following; 
+This is a Postman collection for F5 iHealth API which can do the following; 
 
 1. Get authenticated to iHealth API using `client_id` and `client_secret`. It also saves the bearer token so that subsequent request can reuse the bearer token
 2. Upload a qkview
