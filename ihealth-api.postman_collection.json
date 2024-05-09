@@ -1,0 +1,519 @@
+{
+	"info": {
+		"_postman_id": "44623bf3-0507-47eb-ab93-d14b4f5260e6",
+		"name": "ihealth-api",
+		"description": "This is a Postman collection for F5 iHealth API which can do the following;\n\n- Get authenticated to iHealth API using `client_id` and `client_secret`. It also saves the bearer token so that subsequent request can reuse the bearer token\n    \n- Upload a qkview\n    \n- List all qkview\n    \n- Delete a qkview or delete all qkview\n    \n- Download diagnostics report in PDF, CSV or in XML format\n    \n- Show qkview metadata\n    \n- List available tmsh commands that can be run on the qkview",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10107068"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get authenticated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response_json = JSON.parse(responseBody);",
+									"pm.collectionVariables.set(\"access_token\", response_json.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Basic MG9hMTI0ZGZkYWQ3dGFVZXkzNTg6X0lmTzRzLW5UdXhCZDhMADEUPAUTHENTICATIONk5HT1YzUzdwTjU5TlVKMEI5cmZ1U3NMczdWT241ZXFsZVY3UTI0MA=="
+							},
+							{
+								"key": "cache-control",
+								"value": "no-cache"
+							},
+							{
+								"key": "content-type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "ihealth",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://identity.account.f5.com/oauth2/ausp95ykc80HOU7SQ357/v1/token",
+							"protocol": "https",
+							"host": [
+								"identity",
+								"account",
+								"f5",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"ausp95ykc80HOU7SQ357",
+								"v1",
+								"token"
+							]
+						},
+						"description": "1. Go to [https://my.f5.com/manage/s/article/K000130498](https://my.f5.com/manage/s/article/K000130498) and create a new API credentials.\n    \n2. To covert the client_id and client_secret, run the following:  \n    `echo -n client_id:client_secret | base64`  \n    Copy the value and paste it in Headers variable (authorization).\n3. Run the request and it will obtain a Bearer Token and will save it under the Collection's variable.  \n    This bearer token is valid for 30 minutes."
+					},
+					"response": []
+				}
+			],
+			"description": "[https://clouddocs.f5.com/api/ihealth/Authentication.html](https://clouddocs.f5.com/api/ihealth/Authentication.html)"
+		},
+		{
+			"name": "QKview",
+			"item": [
+				{
+					"name": "List all QKview",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.f5.ihealth.api+json"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews"
+							]
+						},
+						"description": "This request will obtain a list of IDs for all QKViews available in iHealth website.\n\nPossible responses:\n\n| HTTP Code | message |\n| --- | --- |\n| 200 | All good |\n| 303 | See Other |\n| 400 | Bad request |\n| 403 | Forbidden |\n| 406 | Not Acceptable |"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload QKview",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.f5.ihealth.api+json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "qkview",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "visible_in_gui",
+									"value": "True",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{base_url}}/qkviews",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews"
+							]
+						},
+						"description": "This request will upload a qkview and will make is visible in iHealth website. To upload, go to Body tab and then click on the Upload icon, select the file from your local machine and press SEND.\n\nPossible responses:\n\n| HTTP Code | message |\n| --- | --- |\n| 200 | All good |\n| 303 | See Other |\n| 400 | Bad request |\n| 403 | Forbidden |\n| 406 | Not Acceptable |"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a QKview",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews/{{qkview_id}}",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews",
+								"{{qkview_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all QKview",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.f5.ihealth.api+json"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "[https://clouddocs.f5.com/api/ihealth/QKView_Collection_Methods.html](https://clouddocs.f5.com/api/ihealth/QKView_Collection_Methods.html)"
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "Show report in PDF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.f5.ihealth.api"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews/{{qkview_id}}/diagnostics.pdf",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews",
+								"{{qkview_id}}",
+								"diagnostics.pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show report in CSV",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.f5.ihealth.api"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews/{{qkview_id}}/diagnostics.csv",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews",
+								"{{qkview_id}}",
+								"diagnostics.csv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show report in XML",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.f5.ihealth.api"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews/{{qkview_id}}/diagnostics",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews",
+								"{{qkview_id}}",
+								"diagnostics"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "[https://clouddocs.f5.com/api/ihealth/QKView_Diagnostics.html](https://clouddocs.f5.com/api/ihealth/QKView_Diagnostics.html)"
+		},
+		{
+			"name": "Misc",
+			"item": [
+				{
+					"name": "Show QKView metadata",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.f5.ihealth.api+json"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews/{{qkview_id}}/diagnostics",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews",
+								"{{qkview_id}}",
+								"diagnostics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Run tmsh commands",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "company-ihealth"
+							}
+						],
+						"url": {
+							"raw": "https://{{base_url}}/qkviews/{{qkview_id}}/commands",
+							"protocol": "https",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"qkviews",
+								"{{qkview_id}}",
+								"commands"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "[https://clouddocs.f5.com/api/ihealth/QKView_Metadata.html](https://clouddocs.f5.com/api/ihealth/QKView_Metadata.html)\n\n[https://clouddocs.f5.com/api/ihealth/QKView_Command_Output.html](https://clouddocs.f5.com/api/ihealth/QKView_Command_Output.html)"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "client_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "client_secret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "qkview_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
